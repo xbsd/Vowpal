@@ -3,7 +3,17 @@ cat train.csv | sed -e '1d' | perl -wnlaF',' -e 'print "$F[1] 1 $F[0]|n I1:$F[2]
 cat test.csv | sed -e '1d' | perl -wnlaF',' -e 'print "1 1 $F[0]|n I1:$F[1] I2:$F[2] I3:$F[3] I4:$F[4] I5:$F[5] I6:$F[6] I7:$F[7] I8:$F[8] I9:$F[9] I10:$F[10] I11:$F[11] I12:$F[12] I13:$F[13] |c @F[14 .. 39]"' | sed 's/^0/-1/g' | sed 's/I\([0-9]*\):\([ 0]\)//g' > test.vw 
 
 
+# ---- Using Perl to convert Categorical Hex variables ----
 
+echo "starting train ..."
+cat /mnt/train.csv | sed -e '1d' | perl -wnlaF',' -e 'print map {hex($_).","} @F[15..30]' | sed 's/,$//g' > train.cat
+
+echo "completed train, starting test ..."
+cat /mnt/test.csv | sed -e '1d' | perl -wnlaF',' -e 'print map {hex($_).","} @F[14..29]' | sed 's/,$//g' > test.cat
+
+echo "completed test"
+
+# ---
 
 
 
