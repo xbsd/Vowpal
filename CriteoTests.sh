@@ -13,6 +13,24 @@ cat /mnt/test.csv | sed -e '1d' | perl -wnlaF',' -e 'print map {hex($_).","} @F[
 
 echo "completed test"
 
+
+echo "starting numeric variables"
+echo "starting train ..."
+cat /mnt/train.csv | cut -d, -f2-15 | sed '1d' > train.num
+
+echo "completed train, starting test ..."
+cat /mnt/test.csv | cut -d, -f1-14 | sed '1d' > test.num
+
+echo "completed test ..."
+
+sed -i 's/$/,/g' test.num # Add a , at the end of the file
+paste test.num test.cat | sed 's/\t//g' > test.all
+
+sed -i 's/$/,/g' train.num # Add a , at the end of the file
+paste train.num train.cat | sed 's/\t//g' > train.all
+
+
+
 # ---
 
 
