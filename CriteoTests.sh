@@ -68,7 +68,7 @@ paste train.num train.cat | sed 's/\t//g' > train.all
 # Creating the libsvm format ...
 
 cat train.all | cut -d, -f1-30 | perl -wnlaF',' -e 'printf "$F[0] "; for my $i (1..29) { printf "$i:$F[$i] "}; print "";' > train.libsvm
-cat test.all | cut -d, -f1-30 | perl -wnlaF',' -e 'for my $i (1..29) { printf "$i:$F[$i] "}; print "";' > test.libsvm
+cat test.all | cut -d, -f1-30 | perl -wnlaF',' -e 'printf "0 "; for my $i (1..29) { printf "$i:$F[$i] "}; print "";' > test.libsvm
 
 
 
