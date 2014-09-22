@@ -1,7 +1,3 @@
-cat train.csv | sed -e '1d' | perl -wnlaF',' -e 'print "$F[1] 1 $F[0]|n I1:$F[2] I2:$F[3] I3:$F[4] I4:$F[5] I5:$F[6] I6:$F[7] I7:$F[8] I8:$F[9] I9:$F[10] I10:$F[11] I11:$F[12] I12:$F[13] I13:$F[14] |c @F[15 .. 40]"' | sed 's/^0/-1/g' | sed 's/I\([0-9]*\):\([ 0]\)//g' > train.vw
-
-cat test.csv | sed -e '1d' | perl -wnlaF',' -e 'print "1 1 $F[0]|n I1:$F[1] I2:$F[2] I3:$F[3] I4:$F[4] I5:$F[5] I6:$F[6] I7:$F[7] I8:$F[8] I9:$F[9] I10:$F[10] I11:$F[11] I12:$F[12] I13:$F[13] |c @F[14 .. 39]"' | sed 's/^0/-1/g' | sed 's/I\([0-9]*\):\([ 0]\)//g' > test.vw 
-
 
 # ---- Using Perl to convert Categorical Hex variables ----
 
@@ -74,10 +70,10 @@ cat test.all | cut -d, -f1-30 | perl -wnlaF',' -e 'printf "0 "; for my $i (1..29
 
 # ---
 
-
+cat train.csv | sed -e '1d' | perl -wnlaF',' -e 'print "$F[1] 1 $F[0]|n I1:$F[2] I2:$F[3] I3:$F[4] I4:$F[5] I5:$F[6] I6:$F[7] I7:$F[8] I8:$F[9] I9:$F[10] I10:$F[11] I11:$F[12] I12:$F[13] I13:$F[14] |c @F[15 .. 40]"' | sed 's/^0/-1/g' | sed 's/I\([0-9]*\):\([ 0]\)//g' > train.vw
+cat test.csv | sed -e '1d' | perl -wnlaF',' -e 'print "1 1 $F[0]|n I1:$F[1] I2:$F[2] I3:$F[3] I4:$F[4] I5:$F[5] I6:$F[6] I7:$F[7] I8:$F[8] I9:$F[9] I10:$F[10] I11:$F[11] I12:$F[12] I13:$F[13] |c @F[14 .. 39]"' | sed 's/^0/-1/g' | sed 's/I\([0-9]*\):\([ 0]\)//g' > test.vw 
 
 head -100000 train.csv | sed -e '1d' | perl -wnlaF',' -e 'print "$F[1] 1 $F[0]|n I1:$F[2] I2:$F[3] I3:$F[4] I4:$F[5] I5:$F[6] I6:$F[7] I7:$F[8] I8:$F[9] I9:$F[10] I10:$F[11] I11:$F[12] I12:$F[13] I13:$F[14] |c @F[15 .. 40]"' | sed 's/^0/-1/g' | sed 's/I\([0-9]*\):\([ 0]\)//g' |wc -l
-
 head -100000  test.csv | sed -e '1d' | perl -wnlaF',' -e 'print "1 1 $F[0]|n I1:$F[1] I2:$F[2] I3:$F[3] I4:$F[4] I5:$F[5] I6:$F[6] I7:$F[7] I8:$F[8] I9:$F[9] I10:$F[10] I11:$F[11] I12:$F[12] I13:$F[13] |c @F[14 .. 39]"' | sed 's/^0/-1/g' | sed 's/I\([0-9]*\):\([ 0]\)//g' | wc -l 
 
 dasguna@ip-10-179-180-139:/disk1/raj/kg/cri/data$ vw -c -k -d train.vw --loss_function logistic -q nn --passes 20
