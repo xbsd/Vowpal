@@ -1,0 +1,82 @@
+
+If you see the logloss increase suddenly during training (i.e., instead of decreasing progressively, it increases during training), this could be due to patterns in the training dataset.
+
+Use shuf to shuffle the file and retrain.
+
+ubuntu@ip-10-144-208-85:/mnt$ vw -c -k -d train.vw --loss_function logistic -q nn --passes 1 -b 30 --save_resume --sgd --exact_adaptive_norm -f model.saveresume
+creating quadratic features for pairs: nn
+final_regressor = model.saveresume
+Num weight bits = 30
+learning rate = 0.5
+initial_t = 0
+power_t = 0.5
+creating cache_file = train.vw.cache
+Reading datafile = train.vw
+num sources = 1
+average    since         example     example  current  current  current
+loss       last          counter      weight    label  predict features
+0.693147   0.693147            1         1.0  -1.0000   0.0000      158
+0.349720   0.006292            2         2.0  -1.0000  -5.0653      158
+0.174860   0.000000            4         4.0  -1.0000 -50.0000       28
+0.477954   0.781048            8         8.0   1.0000  -1.6339       64
+5.244884   10.011814          16        16.0  -1.0000 -20.7704       78
+4.229553   3.214221           32        32.0  -1.0000  -0.3035       42
+3.963931   3.698309           64        64.0   1.0000  -1.9577       68
+2.275268   0.586605          128       128.0  -1.0000  -0.7466       57
+1.394955   0.514643          256       256.0  -1.0000  -1.8444       64
+0.971395   0.547835          512       512.0  -1.0000  -1.5087      136
+0.717259   0.463122         1024      1024.0  -1.0000  -2.6277       82
+0.595959   0.474660         2048      2048.0  -1.0000  -0.3557       82
+0.534273   0.472586         4096      4096.0   1.0000   0.0424      131
+0.517075   0.499877         8192      8192.0  -1.0000  -3.3216       82
+0.499475   0.481874        16384     16384.0  -1.0000  -0.0175      116
+0.485008   0.470541        32768     32768.0  -1.0000  -1.2372       98
+0.473019   0.461029        65536     65536.0  -1.0000  -2.9488      136
+0.467944   0.462868       131072    131072.0  -1.0000  -1.2231      181
+0.482115   0.496287       262144    262144.0  -1.0000   1.0986      154 <------ LogLoss increased erratically
+0.486647   0.491178       524288    524288.0  -1.0000   0.4551      179
+0.480584   0.474521      1048576   1048576.0  -1.0000   0.5685       81
+^C
+
+# Shuffle the File
+
+ubuntu@ip-10-144-208-85:/mnt$ shuf train.vw > t
+ubuntu@ip-10-144-208-85:/mnt$ mv t train.shuf.vw
+
+ubuntu@ip-10-144-208-85:/mnt$ vw -c -k -d train.shuf.vw --loss_function logistic -q nn --passes 1 -b 30 --save_resume --sgd --exact_adaptive_norm -f model.saveresume
+creating quadratic features for pairs: nn
+final_regressor = model.saveresume
+Num weight bits = 30
+learning rate = 0.5
+initial_t = 0
+power_t = 0.5
+creating cache_file = train.shuf.vw.cache
+Reading datafile = train.shuf.vw
+num sources = 1
+average    since         example     example  current  current  current
+loss       last          counter      weight    label  predict features
+0.693147   0.693147            1         1.0  -1.0000   0.0000       78
+1.264757   1.836367            2         2.0   1.0000  -1.6627      112
+5.135389   9.006021            4         4.0  -1.0000  12.4934      182
+2.721983   0.308577            8         8.0  -1.0000  -4.8480       46
+2.472934   2.223885           16        16.0  -1.0000  -0.6121      136
+1.732793   0.992651           32        32.0   1.0000   4.0423      133
+1.198475   0.664157           64        64.0  -1.0000  -2.7311      178
+0.905849   0.613223          128       128.0  -1.0000  -0.9642      205
+0.665727   0.425605          256       256.0  -1.0000  -0.5814      136
+0.602629   0.539531          512       512.0  -1.0000  -1.4079      181
+0.574147   0.545666         1024      1024.0   1.0000  -0.7707      178
+0.551995   0.529842         2048      2048.0   1.0000  -0.3660       46
+0.554245   0.556496         4096      4096.0  -1.0000  -0.7565      158
+0.547521   0.540798         8192      8192.0  -1.0000  -1.5870      135
+0.539922   0.532323        16384     16384.0  -1.0000  -2.6451       41
+0.526105   0.512287        32768     32768.0  -1.0000  -0.7711      136
+0.517657   0.509210        65536     65536.0   1.0000   0.1817      132
+0.508253   0.498849       131072    131072.0  -1.0000  -1.5886      112
+0.499873   0.491492       262144    262144.0   1.0000  -1.0483      154
+0.492862   0.485851       524288    524288.0  -1.0000  -0.9302      137
+0.486324   0.479786      1048576   1048576.0   1.0000  -0.4866      178
+0.481619   0.476915      2097152   2097152.0   1.0000  -1.3940       78 <-- Progressive decrease in LogLoss
+0.477383   0.473147      4194304   4194304.0  -1.0000  -0.5234       69 <--
+0.473251   0.469120      8388608   8388608.0  -1.0000  -2.2849      132 <--
+0.470271   0.467291     16777216  16777216.0   1.0000  -2.5552       98
